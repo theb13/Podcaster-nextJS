@@ -35,6 +35,25 @@ export const Container = styled(Column)`
         text-align: center;
     }
 
+    .currentEpisode {
+        text-align: center;
+        img {
+            border-radius: 1.5rem;
+        }
+        strong {
+            display: block;
+            margin-top: 2rem;
+            font: 600 1.25rem Lexend, sans-serif;
+            line-height: 1.75rem;
+        }
+        span {
+            display: block;
+            margin-top: 1rem;
+            opacity: 0.6;
+            line-height: 1.5rem;
+        }
+    }
+
     footer {
         align-self: stretch;
         &.empty {
@@ -72,12 +91,30 @@ export const Container = styled(Column)`
             border: 0;
             font-size: 0;
 
+            transition: filter 0.2s;
+            &:disabled {
+                cursor: default;
+                opacity: 0.5;
+            }
+            :hover:not(:disabled) {
+                filter: brightness(0.7);
+            }
             &.playButton {
                 width: 4rem;
                 height: 4rem;
 
                 border-radius: 1rem;
                 background: ${({ theme }) => theme.colors.purple400};
+
+                :hover:not(:disabled) {
+                    filter: brightness(0.95);
+                }
+            }
+            &.isActive {
+                filter: invert(0.35) sepia(1) sepia(3) hue-rotate(100deg);
+                &:hover{
+                    filter:brightness(0.6) invert(0.35) sepia(1) sepia(3) hue-rotate(100deg);
+                }
             }
         }
     }

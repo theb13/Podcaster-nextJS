@@ -3,8 +3,8 @@ export interface Episode {
     title: string
     members: string
     thumbnail: string
-    publishedAt:string
-    duration:string
-    description:string
-    url:string
+    publishedAt: string
+    duration: number
+    description: string
+    url: string
 }

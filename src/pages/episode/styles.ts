@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { Column } from "../../styles/index"
 
-export const Container = styled(Column)`
+const Container = styled(Column)`
     max-width: 45rem;
     padding: 3rem 2rem;
     margin: 0 auto;
@@ -51,7 +51,7 @@ export const Container = styled(Column)`
             display: inline-block;
             font-size: 0.875rem;
 
-             + span {
+            + span {
                 margin-left: 0.5rem;
                 padding-left: 0.5rem;
                 position: relative;
@@ -69,16 +69,16 @@ export const Container = styled(Column)`
                 }
             }
         }
-
-
     }
 
-    .description{
-        margin-top:2rem;
-        line-height:1.675rem;
+    .description {
+        margin-top: 2rem;
+        line-height: 1.675rem;
         color: ${({ theme }) => theme.colors.gray800};
-        p{
+        p {
             margin: 1.5rem 0;
         }
     }
 `
+
+export default Container

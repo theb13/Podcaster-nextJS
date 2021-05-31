@@ -1,21 +1,27 @@
 import { GetStaticPaths, GetStaticProps } from "next"
-import { useRouter } from "next/router"
 import { convertDurationToTimeString } from "../../helpers/convertDurationToTimeString"
 import { Episode } from "../../helpers/types"
-import { getSinglePodcast } from "../../services/api"
+import { getPodcast, getSinglePodcast } from "../../services/api"
 import { format, parseISO } from "date-fns"
 import pt from "date-fns/locale/pt"
-import { Container } from "./styles"
+import Container from "./styles"
 import Image from "next/image"
 import Link from "next/link"
+import { usePlayer } from "../../context/PlayerContext"
+import Head from "next/Head"
 
 interface Props {
     episode: Episode
 }
 
 export default function Home({ episode }: Props) {
+    const { play } = usePlayer()
+
     return (
         <Container>
+            <Head>
+                <title>{episode.title} | podcaster</title>
+            </Head>
             <div className="thumbnailContainer">
                 <Link href="/">
                     <button type="button">
@@ -28,7 +34,7 @@ export default function Home({ episode }: Props) {
                     src={episode.thumbnail}
                     objectFit="cover"
                 />
-                <button type="button">
+                <button type="button" onClick={() => play(episode)}>
                     <img src="/play.svg" alt="Tocar episodio" />
                 </button>
             </div>
@@ -36,7 +42,7 @@ export default function Home({ episode }: Props) {
                 <h1>{episode.title}</h1>
                 <span>{episode.members}</span>
                 <span>{episode.publishedAt}</span>
-                <span>{episode.duration}</span>
+                <span>{convertDurationToTimeString(episode.duration)}</span>
             </header>
             <div
                 className="description"
@@ -47,8 +53,17 @@ export default function Home({ episode }: Props) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+    const response = (await getPodcast(2)) as any
+    const paths = response.map((episode) => {
+        return {
+            params: {
+                slug: episode.id,
+            },
+        }
+    })
+
     return {
-        paths: [],
+        paths,
         fallback: "blocking",
     }
 }
@@ -57,7 +72,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     const { slug } = ctx.params
     const data = (await getSinglePodcast(slug)) as any
 
-    console.log(data)
     const episode = {
         id: data.id,
         title: data.title,
@@ -65,7 +79,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
         publishedAt: format(parseISO(data.published_at), "d MMM yy", {
             locale: pt,
         }),
-        duration: convertDurationToTimeString(Number(data.file.duration)),
+        duration: Number(data.file.duration),
         description: data.description,
         url: data.file.url,
         thumbnail: data.thumbnail,

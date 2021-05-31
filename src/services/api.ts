@@ -4,11 +4,11 @@ const api = axios.create({
     timeout: 10000,
 })
 
-export const getPodcast = () =>
+export const getPodcast = (_limit :number) =>
     new Promise((resolve, reject) => {
         api.get(`episodes`, {
             params: {
-                _limit: 12,
+            _limit,
                 _sort: "published_at",
                 _order: "desc",
             },

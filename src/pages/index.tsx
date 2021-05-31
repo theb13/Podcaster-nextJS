@@ -7,6 +7,8 @@ import pt from "date-fns/locale/pt"
 import { convertDurationToTimeString } from "../helpers/convertDurationToTimeString"
 import Link from "next/link"
 import { Container } from "../styles/home"
+import { usePlayer } from "../context/PlayerContext"
+import  Head  from "next/Head"
 
 interface Props {
     latestEpisodes: Episode[]
@@ -14,8 +16,12 @@ interface Props {
 }
 
 export default function Home({ latestEpisodes, allEpisodes }: Props) {
+    const { playList } = usePlayer()
+
+    const episodeList = [...latestEpisodes, ...allEpisodes]
+
     function renderLatestEpisodes() {
-        return latestEpisodes.map((episode) => {
+        return latestEpisodes.map((episode, index) => {
             return (
                 <li key={episode.id}>
                     <Image
@@ -31,9 +37,14 @@ export default function Home({ latestEpisodes, allEpisodes }: Props) {
                         </Link>
                         <p>{episode.members}</p>
                         <span>{episode.publishedAt}</span>
-                        <span>{episode.duration}</span>
+                        <span>
+                            {convertDurationToTimeString(episode.duration)}
+                        </span>
                     </div>
-                    <button type="button">
+                    <button
+                        type="button"
+                        onClick={() => playList(episodeList, index)}
+                    >
                         <img src="/play-green.svg" alt="Tocar episodio" />
                     </button>
                 </li>
@@ -42,7 +53,7 @@ export default function Home({ latestEpisodes, allEpisodes }: Props) {
     }
 
     function renderAllEpisodes() {
-        return allEpisodes.map((episode) => {
+        return allEpisodes.map((episode, index) => {
             return (
                 <tr key={episode.id}>
                     <td style={{ width: 72 }}>
@@ -61,9 +72,17 @@ export default function Home({ latestEpisodes, allEpisodes }: Props) {
                     </td>
                     <td>{episode.members}</td>
                     <td style={{ width: 100 }}>{episode.publishedAt}</td>
-                    <td>{episode.duration}</td>
+                    <td>{convertDurationToTimeString(episode.duration)}</td>
                     <td>
-                        <button type="button">
+                        <button
+                            type="button"
+                            onClick={() =>
+                                playList(
+                                    episodeList,
+                                    index + latestEpisodes.length
+                                )
+                            }
+                        >
                             <img src="/play-green.svg" alt="Tocar episodio" />
                         </button>
                     </td>
@@ -74,6 +93,9 @@ export default function Home({ latestEpisodes, allEpisodes }: Props) {
 
     return (
         <Container>
+            <Head>
+                <title>Home | podcaster</title>
+            </Head>
             <section className="latestEpisodes">
                 <h2>Últimos lançamentos</h2>
                 <ul>{renderLatestEpisodes()}</ul>
@@ -99,7 +121,7 @@ export default function Home({ latestEpisodes, allEpisodes }: Props) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-    const response = (await getPodcast()) as any
+    const response = (await getPodcast(12)) as any
 
     const episodes = response.map((episode) => {
         return {
@@ -109,9 +131,7 @@ export const getStaticProps: GetStaticProps = async () => {
             publishedAt: format(parseISO(episode.published_at), "d MMM yy", {
                 locale: pt,
             }),
-            duration: convertDurationToTimeString(
-                Number(episode.file.duration)
-            ),
+            duration: Number(episode.file.duration),
             description: episode.description,
             url: episode.file.url,
             thumbnail: episode.thumbnail,
@@ -119,7 +139,7 @@ export const getStaticProps: GetStaticProps = async () => {
     })
 
     const latestEpisodes = episodes.slice(0, 2)
-    const allEpisodes = episodes.slice(0, episodes.length)
+    const allEpisodes = episodes.slice(2, episodes.length)
     return {
         props: {
             latestEpisodes,

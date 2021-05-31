@@ -1,0 +1,32 @@
+{
+    "name": "Podcaster",
+    "short_name": "falaDev",
+    "description": "Veja todos podcasts em qualquel lugar",
+    "background_color": "#f7f9fa",
+    "theme_color": "#8256e5",
+    "display": "standalone",
+    "lang": "pt",
+    "start_url": ".",
+    "icons": [
+        {
+            "src": "favicon.png",
+            "sizes": "48x48",
+            "type": "image/png"
+        },
+        {
+            "src": "favicon@2x.png",
+            "sizes": "72x72",
+            "type": "image/png"
+        },
+        {
+            "src": "favicon@3x.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
+        {
+            "src": "favicon@4x.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        }
+    ]
+}

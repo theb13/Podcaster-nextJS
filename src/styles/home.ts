@@ -6,8 +6,8 @@ export const Container = styled.div`
     overflow-y: scroll;
 
     h2 {
-        margin-top: 3rem;
-        margin-bottom: 1.5rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
     }
 
     .latestEpisodes {
@@ -113,10 +113,8 @@ export const Container = styled.div`
 
     .allEpisodes {
         padding-bottom: 2rem;
-
         table {
             width: 100%;
-
             th,
             td {
                 padding: 0.75rem 1rem;
